@@ -15,22 +15,81 @@ A full-stack HR assistant with three modes:
 - **Auth/Keys:** Environment variables via `.env` (never commit secrets)
 
 ---
+## How to Get API Keys & Credentials
 
-## Monorepo Layout
+This project needs a few external credentials. Here’s a concise, step‑by‑step guide for each.
 
-```
-repo/
-  backend/
-    main_integrated.py         # FastAPI app (this file)
-                               # sample or your CSV (optional)
-    llamaindex_store/          # persisted index (auto-created)
-    credentials.json           # (local) GCP service account (DO NOT COMMIT)
-    .env                       # local secrets (DO NOT COMMIT)
-  frontend/
-    (Next.js app)
-```
+### 1) OpenAI API Key
+1. Sign in at <https://platform.openai.com/> (create an account if needed).
+2. Go to **Dashboard → API keys** and click **Create new secret key**.
+3. Copy the key (starts with `sk-...`) and store it in your password manager.
+4. Set it in your backend `.env`:
+   ```ini
+   OPENAI_API_KEY=sk-...
+   ```
+5. **Do not commit** the key to git.
+
+> (Optional) **Organization ID**: If you use org scoping, add `OPENAI_ORG=...` in `.env`.
 
 ---
+
+### 2) Google Maps API Key (Places/Details/Directions)
+1. Go to **Google Cloud Console**: <https://console.cloud.google.com/>
+2. Create or select a **Project**.
+3. Enable APIs (**APIs & Services → Library**):
+   - **Places API**
+   - **Maps JavaScript API** (if you later render maps in frontend)
+   - **Directions API**
+4. Go to **APIs & Services → Credentials → + Create credentials → API key**.
+5. Copy the key and **restrict it** (**VERY IMPORTANT**):
+   - Click the key → **Key restrictions**:
+     - If calling **from backend only**: set **IP address** restrictions to your server IP(s).
+     - If calling **from browser**: set **HTTP referrers (websites)** to your domain(s).
+     - Under **API restrictions**, allow only the APIs you enabled.
+6. Add to backend `.env`:
+   ```ini
+   GOOGLE_MAPS_API_KEY=YOUR_KEY
+   ```
+
+> Billing must be enabled on the GCP project to use Maps APIs.
+
+---
+
+### 3) Google Drive – Service Account & Folder ID (for the HR KB)
+This project reads HR PDFs/DOCX from a specific Drive folder using a **Service Account**.
+
+**A) Enable API and create Service Account**
+1. In **Google Cloud Console**, open your project.
+2. **APIs & Services → Library** → enable **Google Drive API**.
+3. Go to **IAM & Admin → Service Accounts → Create service account**.
+4. After creation, **Keys → Add key → Create new key → JSON**. A file like `credentials.json` downloads.
+5. Put it in `backend/` and **do not commit to git**. Set in `.env`:
+   ```ini
+   GDRIVE_SA_JSON=credentials.json
+   ```
+
+**B) Share the Drive folder with the service account**
+1. In Google Drive, right‑click your HR folder → **Share**.
+2. Share it with the **service account email** (looks like `name@project-id.iam.gserviceaccount.com`) and give **Viewer** or **Editor** access.
+3. Copy the **Folder ID** from the folder URL (between `/folders/` and the next slash). Example:
+   - `https://drive.google.com/drive/folders/1AbCDefGh...` → `GDRIVE_FOLDER_ID=1AbCDefGh...`
+4. Add to `.env`:
+   ```ini
+   GDRIVE_FOLDER_ID=your_folder_id
+   ```
+
+**C) (CI-friendly) Use Base64 instead of a file (optional)**
+If you deploy with GitHub Actions or a platform where you’d rather not store a file:
+1. Base64‑encode `credentials.json` locally:
+   - **Windows PowerShell**:
+     ```powershell
+     [Convert]::ToBase64String([IO.File]::ReadAllBytes("backend\credentials.json")) | Set-Content sa.b64
+     ```
+2. Put the contents of `sa.b64` into a secret named `GDRIVE_SA_JSON_B64`.
+3. On startup (or in CI), decode it to `backend/credentials.json` and set `GDRIVE_SA_JSON=credentials.json`.
+
+---
+
 ## Setup
 
 ### Backend
