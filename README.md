@@ -16,21 +16,6 @@ A full-stack HR assistant with three modes:
 
 ---
 
-## Monorepo Layout
-
-```
-repo/
-  backend/
-    main_integrated.py         # FastAPI app (this file)
-                               # sample or your CSV (optional)
-    llamaindex_store/          # persisted index (auto-created)
-    credentials.json           # (local) GCP service account (DO NOT COMMIT)
-    .env                       # local secrets (DO NOT COMMIT)
-  frontend/
-    (Next.js app)
-```
-
----
 ## Setup
 
 ### Backend
