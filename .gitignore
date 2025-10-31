@@ -1,0 +1,31 @@
+﻿# secrets
+.env
+*.env
+**/tramontia-hr-214415e6bde4.json
+**/credentials.json
+**/*service-account*.json
+**/*.key
+**/*.pem
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+.envrc
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-error.log*
+dist/
+build/
+
+# OS/IDE
+.DS_Store
+Thumbs.db
+.idea/
+*.iml
+.vscode/
