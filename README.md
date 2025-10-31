@@ -17,7 +17,6 @@ A full-stack HR assistant with three modes:
 ---
 ## How to Get API Keys & Credentials
 
-<<<<<<< HEAD
 This project needs a few external credentials. Here’s a concise, step‑by‑step guide for each.
 
 ### 1) OpenAI API Key
@@ -28,9 +27,6 @@ This project needs a few external credentials. Here’s a concise, step‑by‑s
    ```ini
    OPENAI_API_KEY=sk-...
    ```
-5. **Do not commit** the key to git.
-
-> (Optional) **Organization ID**: If you use org scoping, add `OPENAI_ORG=...` in `.env`.
 
 ---
 
@@ -92,7 +88,6 @@ If you deploy with GitHub Actions or a platform where you’d rather not store a
 ---
 
 =======
->>>>>>> b05e9e2b915b9d6cad1d06f4212ec40f0613b7c4
 ## Setup
 
 ### Backend
